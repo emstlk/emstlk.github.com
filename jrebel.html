@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Blog by emstlk</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Emaster blog</h1>
+          <h2></h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/emstlk" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h2>Настраиваем JRebel для удаленного приложения</h2>
+
+<p>Столкнулся с проблемой, что <a href="http://zeroturnaround.com/software/jrebel/">JRebel</a> не работает с remote standalone application, т.е. без сервера приложений. Дальше были курения, как это работает и что можно сделать. Спасибо (<a href="https://github.com/shelajev" class="user-mention">@shelajev</a>), собственно он и предложил мне написать об этом.</p>
+
+<p>Дальше будет пример, как я настроил JRebel в связке с <a href="https://www.dropbox.com/">Dropbox</a> под свое приложение.</p>
+
+<h3>Настройка проекта</h3>
+
+<p>Сначала необходимо добавить в ресурсы своего проекта конфиг <strong>rebel.xml</strong> с указанием пути, где необходимо брать новые классы. Мой выглядит вот так:</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd"&gt;
+    &lt;classpath&gt;
+        &lt;dir name="/home/emaster/Dropbox/jrebel_sync/main"&gt;
+        &lt;/dir&gt;
+    &lt;/classpath&gt;
+&lt;/application&gt;
+</code></pre>
+
+<p>Думаю <a href="https://www.dropbox.com/">Dropbox</a> на вашем компьютере уже установлен или вы можете это сделать без меня :)
+Дальше нам нужно, чтобы Dropbox следил за файлами, получаемыми после компиляции проекта. Есть два варианта, либо изменить путь для скомпилированных классов в вашем проекте, либо сделать символьную ссылку. Мне второй вариант больше нравится, сейчас это можно в любой системе сделать (вариант для Linux, Mac):</p>
+
+<pre><code>mkdir ~/Dropbox/jrebel_sync
+cd ~/Dropbox/jrebel_sync
+ln -s /home/emaster/dev/MyProject/target/classes/main
+</code></pre>
+
+<p>Таким образом в ~/Dropbox/jrebel_sync/main будут все скомпилированные классы.</p>
+
+<h3>Настройка сервера</h3>
+
+<p>Далее на сервер скачиваем <a href="http://zeroturnaround.com/software/jrebel/download/prev-releases/">свежий JRebel</a>, распаковываем куда-нибудь.
+Добавляем параметры для запуска приложения:</p>
+
+<pre><code>-javaagent:/home/emaster/jrebel/jrebel.jar
+-Drebel.log=true
+</code></pre>
+
+<p>Теперь установим на сервере <a href="https://www.dropbox.com/install?os=lnx">Dropbox</a> и не забудьте его привязать к своему аккаунту. После установки в домашней директории появится Dropbox с правами только для текущего пользователя, нужно открыть доступ на чтение для всех. Выполним команду:</p>
+
+<pre><code>chmod 755 /home/emaster/Dropbox
+</code></pre>
+
+<h3>Testing</h3>
+
+<p>Осталось пересобрать наш проект и убедиться, что в логах при старте приложения есть строка:</p>
+
+<pre><code>JRebel: Directory '/home/emaster/Dropbox/jrebel_sync/main' will be monitored for changes.
+</code></pre>
+
+<p>Если она присутствует, значит при любой компиляции файла Dropbox обновит его на сервера, а JRebel в свою очередь подхватит новый </p>
+
+<h3>Возможные проблемы</h3>
+
+<p>При новом билде приложения JRebel может подхватить (пока не разобрался почему) старые файлы из Dropbox. Как временный вариант можно чистить директорию target после каждого редеплоя.</p>
+
+		<div id="disqus_thread"></div>
+		<script type="text/javascript">
+			var disqus_shortname = 'emstlk';
+			(function() {
+				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+			})();
+		</script>
+		<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+		<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+        </section>
+
+
+        <footer>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+                  <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-39670620-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+      </div>
+    </div>
+  </body>
+</html>
