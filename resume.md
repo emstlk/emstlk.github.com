@@ -29,7 +29,8 @@ Work experience
   - Integration with social networks 
   - Developed solution to fail-over
   - Optimized backend to high throughput
-  - Worked on few internal projects of rotating ads  
+  - Worked on few internal projects of rotating ads
+  - Developed web-services for web and analytics
 
 * **BIFIT** (Moscow, Russia)
 
@@ -63,7 +64,7 @@ Skills
 ------
 
 * Very experienced with Scala, Java
-* Know well Finagle, Akka, Postgresql, HBase, Hadoop, AWS
+* Know well Finagle, Akka, Netty, Postgresql, HBase, Hadoop, AWS
 * Also have some experience with Cassandra, Play, ScalaFx, JavaScript, WebRTC
 * Other things like bash, git, sbt etc
 
