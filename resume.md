@@ -3,7 +3,7 @@ Ermoshkin Alexander
 
 emstlk@gmail.com
 
-github.com/emstlk
+https://github.com/emstlk
 
 Work experience
 ---------------
