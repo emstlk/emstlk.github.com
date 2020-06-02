@@ -1,9 +1,9 @@
 Ermoshkin Alexander
 ===================
 
-> emstlk@gmail.com
+emstlk@gmail.com
 
-> www.github.com/emstlk
+www.github.com/emstlk
 
 Work experience
 ---------------
