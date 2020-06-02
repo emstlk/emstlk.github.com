@@ -17,7 +17,7 @@ Work experience
   - Developed and tuned client-server communications
   - Integrated CI and release management for all platforms
   - Formed new android scala team and finally moved on scala
-  - Wrote a working prototype of desktop application for a week
+  - Wrote a prototype of desktop application in a week
   - Discovering and resolving bottlenecks and corner cases
   - Consulting mobile platforms (ios, android, win)
   
@@ -63,8 +63,8 @@ Education
 Skills
 ------
 
-* Very experienced with Scala, Java
-* Know well Finagle, Akka, Netty, Postgresql, HBase, Hadoop, AWS
-* Also have some experience with Cassandra, Play, ScalaFx, JavaScript, WebRTC
-* Other things like bash, git, sbt etc
+* Have 5+ years experience in Scala and Java
+* Know well Finagle, Akka, Netty, Monix, Postgresql
+* Also have some experience with HBase, Hadoop, Cassandra, Elasticsearch, Kafka, RabbitMQ
+* Other things like bash, git, sbt, mill, docker, k8s, AWS/GCP
 
