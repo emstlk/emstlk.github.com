@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Quest</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+      text-align: center;
+      padding: 1.5rem;
+      transition: background 1s ease;
+    }
+    
+    body.celebration {
+      background: linear-gradient(to bottom, #fbcfe8, #c4b5fd, #93c5fd);
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 28rem;
+      background-color: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      border: 1px solid #f3f4f6;
+      z-index: 10;
+      position: relative;
+    }
+    
+    .inner {
+      padding: 2rem;
+    }
+    
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-align: center;
+      background-image: linear-gradient(to right, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transition: all 0.5s ease;
+    }
+    
+    .celebration h1 {
+      background-image: linear-gradient(to right, #facc15, #ef4444, #ec4899);
+    }
+    
+    .description {
+      color: #374151;
+      margin-bottom: 2rem;
+      text-align: justify;
+      line-height: 1.625;
+    }
+    
+    input {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: none;
+      background-color: #f3f4f6;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-size: 1.125rem;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    
+    input:focus {
+      background-color: white;
+      outline: none;
+      box-shadow: 0 0 0 2px #3b82f6;
+    }
+    
+    .celebration input:focus {
+      box-shadow: 0 0 0 2px #ec4899;
+    }
+    
+    .hint-container {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      background-color: rgba(219, 234, 254, 0.7);
+      border: 1px solid #dbeafe;
+      box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.3s ease;
+    }
+    
+    .hint-container.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .celebration .hint-container {
+      background-color: rgba(254, 252, 232, 0.7);
+      border-color: #fef9c3;
+    }
+    
+    .hint-text {
+      text-align: center;
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: #1e40af;
+    }
+    
+    .celebration .hint-text {
+      color: #854d0e;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-100px) rotate(180deg); }
+      100% { transform: translateY(-200px) rotate(360deg); opacity: 0; }
+    }
+    
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    
+    .confetti-piece {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      opacity: 0.7;
+      border-radius: 50%;
+      animation: float 7s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <div id="confetti" class="confetti"></div>
+  
+  <audio id="celebrationAudio" src="https://cdn.freesound.org/previews/196/196094_2737063-lq.mp3"></audio>
+  
+  <div class="container">
+    <div class="inner">
+      <h1 id="title">Квест 🎁</h1>
+      
+      <div id="description" class="description">
+        Сегодня я помогу тебе в небольшом квесте чтобы найти подарок приготовленный для тебя. Итак у тебя есть были 200 карточек по португальскому, несколько из них были спрятаны по всему дому. Когда найдешь карточку, просто сканируй QR-код, чтобы узнать адрес и вводи цифру карточки из адреса для получения инструкции. Например код 99 будет у карты с адресом https://www.tatabogata.com/c/99.<br /><br />Итак начнем, думаю стоит изучить твой рабочий стол в студии.
+      </div>
+      
+      <div id="inputContainer">
+        <input
+          type="text"
+          id="codeInput"
+          placeholder="Введите код карточки"
+          autocomplete="off"
+          autofocus
+        >
+      </div>
+      
+      <div id="hintContainer" class="hint-container">
+        <p id="hintText" class="hint-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const hints = {
+      "89": "Твоя гордость, журналы National Geographic. Кажется они оказались полезны",
+      "98": "Ламп в доме не много? Тогда легко будет найти",
+      "79": "О, моё любимое! Специи на кухне, там где-то рядом с ними посмотри",
+      "115": "Столик журнальный и больше ни слова",
+      "193": "А как ты могла забыть про настолки?",
+      "159": "Недавно выключали электричество и когда вырубает мы туда заглядываем первым делом",
+      "110": "Уже близко. Мне нравится твоя пробковая доска, фотографии классные",
+      "99": "Хорошо, теперь сложи этот код с кодом предыдущей карты и прибавь 568",
+      "777": "Красотка, по-моему я оставил что-то для тебя в гостевой ванной. Да, просто найди там третью полку.",
+    };
+
+    const title = document.getElementById('title');
+    const description = document.getElementById('description');
+    const codeInput = document.getElementById('codeInput');
+    const hintContainer = document.getElementById('hintContainer');
+    const hintText = document.getElementById('hintText');
+    const confettiContainer = document.getElementById('confetti');
+    const audio = document.getElementById('celebrationAudio');
+    const body = document.body;
+    const inputContainer = document.getElementById('inputContainer');
+
+    let firstInput = false;
+
+    codeInput.addEventListener('input', handleInput);
+
+    function handleInput() {
+      const inputValue = codeInput.value.trim();
+      
+      if (!firstInput && inputValue) {
+        firstInput = true;
+        description.style.display = 'none';
+      }
+
+      if (inputValue) {
+        showHint(inputValue);
+        
+        if (inputValue === "777") {
+          celebrate();
+        } else {
+          stopCelebration();
+        }
+      } else {
+        hideHint();
+        stopCelebration();
+      }
+    }
+
+    function showHint(code) {
+      // First hide the hint with animation
+      hintContainer.classList.remove('visible');
+      
+      // After animation ends, update text and show again
+      setTimeout(() => {
+        const hint = hints[code] || "Для этого кода нет подсказки";
+        hintText.textContent = hint;
+        hintContainer.classList.add('visible');
+      }, 300);
+    }
+
+    function hideHint() {
+      hintContainer.classList.remove('visible');
+    }
+
+    function celebrate() {
+      body.classList.add('celebration');
+      title.textContent = 'Поздравляю!';
+      
+      // Clear existing confetti
+      confettiContainer.innerHTML = '';
+      
+      // Create new confetti
+      for (let i = 0; i < 20; i++) {
+        createConfettiPiece();
+      }
+      
+      // Play audio
+      try {
+        audio.play().catch(err => console.log("Автовоспроизведение звука заблокировано"));
+      } catch (e) {
+        console.log("Автовоспроизведение звука заблокировано");
+      }
+    }
+
+    function createConfettiPiece() {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti-piece';
+      
+      const size = 0.3 + Math.random() * 0.7;
+      const hue = Math.floor(Math.random() * 360);
+      
+      confetti.style.top = `${Math.random() * 100}%`;
+      confetti.style.left = `${Math.random() * 100}%`;
+      confetti.style.backgroundColor = `hsl(${hue}, 100%, 60%)`;
+      confetti.style.transform = `scale(${size}) rotate(${Math.random() * 360}deg)`;
+      confetti.style.animationDuration = `${3 + Math.random() * 5}s`;
+      confetti.style.animationDelay = `${Math.random() * 5}s`;
+      confetti.style.borderRadius = `${Math.random() * 50}%`;
+      
+      confettiContainer.appendChild(confetti);
+    }
+
+    function stopCelebration() {
+      body.classList.remove('celebration');
+      title.textContent = 'Квест 🎁';
+      confettiContainer.innerHTML = '';
+    }
+
+    // Initialize hint container as hidden
+    hideHint();
+  </script>
+</body>
+</html>
