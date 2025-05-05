@@ -50,15 +50,18 @@
       font-weight: 600;
       margin-bottom: 1rem;
       text-align: center;
-      background-image: linear-gradient(to right, #3b82f6, #8b5cf6);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
       transition: all 0.5s ease;
+    }
+
+    .gradient {
+      color: #3b82f6;
     }
     
     .celebration h1 {
       background-image: linear-gradient(to right, #facc15, #ef4444, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
     
     .description {
@@ -157,7 +160,7 @@
   
   <div class="container">
     <div class="inner">
-      <h1 id="title">Квест 🎁</h1>
+      <h1 id="title"><span class="gradient">Квест</span> <span>🎁</span></h1>
       
       <div id="description" class="description">
         Сегодня я помогу тебе в небольшом квесте чтобы найти подарок приготовленный для тебя. Итак у тебя есть были 200 карточек по португальскому, несколько из них были спрятаны по всему дому. Когда найдешь карточку, просто сканируй QR-код, чтобы узнать адрес и вводи цифру карточки из адреса для получения инструкции. Например код 99 будет у карты с адресом https://www.tatabogata.com/c/99.<br /><br />Итак начнем, думаю стоит изучить твой рабочий стол в студии.
@@ -245,18 +248,16 @@
     }
 
     function celebrate() {
+      codeInput.style.display = 'none';
       body.classList.add('celebration');
       title.textContent = 'Поздравляю!';
       
-      // Clear existing confetti
       confettiContainer.innerHTML = '';
       
-      // Create new confetti
       for (let i = 0; i < 20; i++) {
         createConfettiPiece();
       }
       
-      // Play audio
       try {
         audio.play().catch(err => console.log("Автовоспроизведение звука заблокировано"));
       } catch (e) {
@@ -276,7 +277,7 @@
       confetti.style.backgroundColor = `hsl(${hue}, 100%, 60%)`;
       confetti.style.transform = `scale(${size}) rotate(${Math.random() * 360}deg)`;
       confetti.style.animationDuration = `${3 + Math.random() * 5}s`;
-      confetti.style.animationDelay = `${Math.random() * 5}s`;
+      // confetti.style.animationDelay = `${Math.random() * 5}s`;
       confetti.style.borderRadius = `${Math.random() * 50}%`;
       
       confettiContainer.appendChild(confetti);
@@ -284,7 +285,7 @@
 
     function stopCelebration() {
       body.classList.remove('celebration');
-      title.textContent = 'Квест 🎁';
+      title.innerHTML = '<span class="gradient">Квест</span> <span>🎁</span>';
       confettiContainer.innerHTML = '';
     }
 
